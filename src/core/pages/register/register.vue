@@ -1,9 +1,8 @@
 <script setup lang="ts">
-
 </script>
 
 <template>
-  <nav>
-    <router-view/>
-  </nav>
+    <div>
+        <h1>Register Page</h1>
+    </div>
 </template>
