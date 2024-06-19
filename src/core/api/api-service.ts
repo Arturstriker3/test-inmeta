@@ -1,4 +1,4 @@
-const urlBase = "rota";
+const urlBase = "https://cards-marketplace-api.onrender.com";
 
 const apiService = {
     virtualBranches: `${urlBase}/api/v1/backoffice/virtual-branches`,
