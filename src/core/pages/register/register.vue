@@ -11,6 +11,9 @@ const toaster = createToaster();
 const isLoading = ref(false);
 const isSubmited = ref(false)
 
+const isPasswordVisible = ref(false);
+const isConfirmPasswordVisible = ref(false);
+
 const maxLengthToInputs = 50
 
 type FormField = 'name' | 'email' | 'password' | 'confirmPassword';
@@ -96,23 +99,43 @@ const truncateInput = (field: FormField) => {
 
             <VaInput
                 v-model="form.password"
+                :type="isPasswordVisible ? 'text' : 'password'"
                 :rules="[(value) => (value && value.length > 0) || 'Digite a sua senha!']"
                 label="Senha"
                 :disabled="isLoading"
                 :max-length="50"
                 counter
                 @input="truncateInput('password')"
-            />
+                @click-append-inner="isPasswordVisible = !isPasswordVisible"
+            >
+              <template #appendInner>
+                <VaIcon
+                  :name="isPasswordVisible ? 'visibility_off' : 'visibility'"
+                  size="small"
+                  color="primary"
+                />
+              </template>
+            </VaInput>
 
             <VaInput
                 v-model="form.confirmPassword"
+                :type="isConfirmPasswordVisible ? 'text' : 'password'"
                 :rules="[(value) => (value === form.password) || 'Confirme a sua senha!']"
                 label="Confirmar Senha"
                 :disabled="form.password.length === 0 || isLoading"
                 :max-length="50"
                 counter
                 @input="truncateInput('confirmPassword')"
-            />
+                @click-append-inner="isConfirmPasswordVisible = !isConfirmPasswordVisible"
+            >
+              <template #appendInner>
+                  <VaIcon
+                    :name="isConfirmPasswordVisible ? 'visibility_off' : 'visibility'"
+                    size="small"
+                    color="primary"
+                  />
+              </template>
+            </VaInput>
 
             <div class="flex flex-row justify-between">
               <VaButton :disabled="isLoading" preset="primary" @click="goTo('/')" class="w-28" >

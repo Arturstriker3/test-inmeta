@@ -13,6 +13,8 @@ const store = userAuthStore();
 
 const isLoading = ref(false);
 
+const isPasswordVisible = ref(false);
+
 const { isValid, validate, reset, resetValidation } = useForm('formRef')
 const router = useRouter();
 const form = ref({
@@ -89,13 +91,23 @@ const truncateInput = (field: FormField) => {
   
             <VaInput
                 v-model="form.password"
+                :type="isPasswordVisible ? 'text' : 'password'"
                 :rules="[(value) => (value && value.length > 0) || 'Digite a sua senha!']"
                 label="Senha"
                 :disabled="isLoading"
                 :max-length="50"
                 counter
                 @input="truncateInput('password')"
-            />
+                @click-append-inner="isPasswordVisible = !isPasswordVisible"
+            >
+              <template #appendInner>
+                  <VaIcon
+                    :name="isPasswordVisible ? 'visibility_off' : 'visibility'"
+                    size="small"
+                    color="primary"
+                  />
+              </template>
+            </VaInput>
   
             <div class="flex flex-row justify-between">
               <VaButton :disabled="isLoading" preset="primary" @click="goTo('/')" class="w-28" >
