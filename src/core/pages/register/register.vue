@@ -1,11 +1,16 @@
 <script setup lang="ts">
-import { reactive } from 'vue';
+import { ref } from 'vue';
 import { useForm } from 'vuestic-ui';
 import { useRouter } from 'vue-router';
+import { useAlertStore } from "../../stores/alert";
+import autenticationService from "../../services/autentication";
+
+const alertContext = useAlertStore();
+const isLoading = ref(false);
 
 const { isValid, validate, reset, resetValidation } = useForm('formRef')
 const router = useRouter();
-const form = reactive({
+const form = ref({
     name: '',
     email: '',
     password: '',
@@ -16,7 +21,18 @@ const goToHome = () => {
   router.push('/');
 };
 
-const submit = () => alert('Form submitted!')
+const submit = () => {
+  isLoading.value = true;
+  autenticationService.register({ name: form.value.name, email: form.value.email, password: form.value.password})
+    .then(() => {
+        alertContext.openAlert({ message: "Nova conta cadastrada com sucesso!", severity: "success", time: 3000 });
+    })
+    .finally(() => isLoading.value = false);
+}
+
+const handlePrint = () => {
+  alertContext.openAlert({ message: "Testado com sucesso!", severity: "success", time: 3000 });
+}
 
 </script>
 
@@ -56,6 +72,10 @@ const submit = () => alert('Form submitted!')
           />
 
           <div class="flex flex-row justify-between">
+            <VaButton preset="primary" @click="handlePrint()" class="w-28" >
+            Print
+            </VaButton>
+
             <VaButton preset="primary" @click="goToHome()" class="w-28" >
             Sair
             </VaButton>

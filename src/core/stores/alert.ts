@@ -10,7 +10,7 @@ export const useAlertStore = defineStore("alert", {
     state: () => ({
         isActive: false,
         message: "",
-        severity: null
+        severity: ""
     }),
     getters: {
         getIsActive: (state) => state.isActive,
