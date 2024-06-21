@@ -4,6 +4,9 @@ import { useForm } from 'vuestic-ui';
 import { useRouter } from 'vue-router';
 import { useAlertStore } from "../../stores/alert";
 import autenticationService from "../../services/autentication";
+import { createToaster } from "@meforma/vue-toaster";
+
+const toaster = createToaster();
 
 const alertContext = useAlertStore();
 const isLoading = ref(false);
@@ -31,7 +34,7 @@ const submit = () => {
 }
 
 const handlePrint = () => {
-  alertContext.openAlert({ message: "Testado com sucesso!", severity: "success", time: 3000 });
+  toaster.success(`Hey! I'm here`);
 }
 
 </script>

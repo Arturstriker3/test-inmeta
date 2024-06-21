@@ -1,6 +1,8 @@
 import axios from "axios";
-import { useAlertStore } from "../stores/alert";
 import errorUtils from "../utils/error.utils";
+import { createToaster } from "@meforma/vue-toaster";
+
+const toaster = createToaster();
 
 const axiosInstance = axios.create();
 
@@ -11,8 +13,7 @@ axiosInstance.interceptors.request.use((request) => {
 })
 
 axiosInstance.interceptors.response.use(response => response, (error) => {
-    const alertContext = useAlertStore();
-    alertContext.openAlert({ message: errorUtils.get(error), severity: "error", time: 3000 })
+    toaster.error(errorUtils.get(error));
     return Promise.reject(error);
 })
 
