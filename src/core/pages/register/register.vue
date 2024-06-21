@@ -24,8 +24,8 @@ const form = ref({
     confirmPassword: '',
 })
 
-const goToHome = () => {
-  router.push('/');
+const goTo = (path: string) => {
+  router.push(path);
 };
 
 const submit = () => {
@@ -33,27 +33,19 @@ const submit = () => {
   autenticationService.register({ name: form.value.name, email: form.value.email, password: form.value.password})
     .then(() => {
         toaster.success(`Nova conta cadastrada com sucesso!`);
+        isSubmited.value = true
     })
     .catch(() => {
         resetValidation()
         reset()
     })
-    .finally(() => {isLoading.value = false, isSubmited.value = true});
+    .finally(() => {isLoading.value = false});
 }
 
 const validateEmail = (value: string) => {
   if (value.length === 0) return 'Digite o seu email!';
   if (!EmailUtils.isValid(value)) return 'Email inválido!';
   return true;
-}
-
-const maxInputLength = (maxLength: number) => {
-  return (value: string) => {
-    if(value.length > maxLength){
-      return `Máximo de ${maxLength} caracteres!`
-    }
-    return true;
-  }
 }
 
 watch(form, () => {
@@ -123,7 +115,7 @@ const truncateInput = (field: FormField) => {
             />
 
             <div class="flex flex-row justify-between">
-              <VaButton :disabled="isLoading" preset="primary" @click="goToHome()" class="w-28" >
+              <VaButton :disabled="isLoading" preset="primary" @click="goTo('/')" class="w-28" >
                 <div>
                   <p :disabled="isLoading" >Sair</p>
                 </div>
@@ -143,9 +135,9 @@ const truncateInput = (field: FormField) => {
           <div class="flex justify-center">
             <VaBadge class="font-" text="Sua conta foi registrada!" color="success"/>
           </div>
-          <VaButton :disabled="isLoading" preset="primary" @click="goToHome()" class="w-28" >
+          <VaButton :disabled="isLoading" preset="primary" @click="goTo('/login')" class="w-28" >
             <div>
-              <p :disabled="isLoading" >Sair</p>
+              <p :disabled="isLoading" >Logar</p>
             </div>
           </VaButton>
         </div>

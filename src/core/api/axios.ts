@@ -12,9 +12,15 @@ axiosInstance.interceptors.request.use((request) => {
     return request;
 })
 
-axiosInstance.interceptors.response.use(response => response, (error) => {
-    toaster.error(errorUtils.get(error));
-    return Promise.reject(error);
-})
+axiosInstance.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (!error.response || !error.response.data || !error.response.data.statusCode) {
+            const errorMessage = errorUtils.get(error);
+            toaster.error(errorMessage);
+        }
+        return Promise.reject(error);
+    }
+);
 
 export default axiosInstance;

@@ -1,37 +1,45 @@
 import { defineStore } from "pinia";
 import router from '../router/pages';
-import autenticationService from "../services/autentication";
-import { createToaster } from "@meforma/vue-toaster";
 
-const toaster = createToaster();
-
-export const useAuthStore = defineStore("auth", {
+export const userAuthStore = defineStore("auth", {
     state: () => ({
         isAuth: false,
-        returnUrl: null
+        returnUrl: null,
+        user: null as object | null,
+        accessToken: null as string | null
     }),
     getters: {
         GetIsAuth: (state) => state.isAuth
     },
     actions: {
-        login(emailInput: string, passwordInput: string) {
-            autenticationService.login({email: emailInput, password: passwordInput})
-                .then(() => {
-                    toaster.success(`Nova conta cadastrada com sucesso!`);
-                })
-                .catch(() => {
-                    
-                })
-                .finally(() => {
-                    toaster.success(`Usuário #### logado com sucesso!`);
-                    this.$state.isAuth = true;
-                });
+        login(user: object, token: string) {
+            this.$state.user = user;
+            this.$state.accessToken = token;
 
-            // router.push(this.returnUrl || '/');
+            this.$state.isAuth = true;
+            localStorage.setItem('user', JSON.stringify(user));
+            localStorage.setItem('accessToken', token);
         },
         logout() {
+
+            this.$state.user = null;
+            this.$state.accessToken = null;
+
+            localStorage.removeItem('user');
+            localStorage.removeItem('accessToken');
+
             this.$state.isAuth = false;
             router.push('/login');
+        },
+        initializeFromLocalStorage() {
+            const storedUser = localStorage.getItem('user');
+            const storedToken = localStorage.getItem('accessToken');
+
+            if (storedUser && storedToken) {
+                this.$state.user = JSON.parse(storedUser);
+                this.$state.accessToken = storedToken;
+                this.$state.isAuth = true;
+            }
         }
     }
 })

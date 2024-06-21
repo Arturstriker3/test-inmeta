@@ -1,11 +1,17 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { useForm } from 'vuestic-ui';
 import { useRouter } from 'vue-router';
 import { createToaster } from "@meforma/vue-toaster";
 import EmailUtils from '../../utils/email.utils';
+import { userAuthStore } from '../../stores/auth';
+import autenticationService from "../../services/autentication";
 
 const toaster = createToaster();
+
+const store = userAuthStore();
+
+const isLoading = ref(false);
 
 const { isValid, validate, reset, resetValidation } = useForm('formRef')
 const router = useRouter();
@@ -14,17 +20,49 @@ const form = ref({
     password: '',
 })
 
-const goToHome = () => {
-  router.push('/');
+const maxLengthToInputs = 50
+type FormField = 'email' | 'password';
+
+const goTo = (path: string) => {
+  router.push(path);
 };
 
-const submit = () => alert('Form submitted!')
+const submit = () => {
+  isLoading.value = true;
+  autenticationService.login({email: form.value.email, password: form.value.password})
+    .then((response) => {
+        const { token, user } = response.data;
+
+        store.login(user, token);
+
+        toaster.success(`Usuário ${user.name} logado com sucesso!`);
+        router.push('/');
+    })
+    .catch(() => {
+        toaster.error('Falha no login. Verifique suas credenciais e tente novamente.');
+        resetValidation()
+        reset()
+    })
+    .finally(() => {isLoading.value = false});
+}
 
 const validateEmail = (value: string) => {
   if (value.length === 0) return 'Digite o seu email!';
   if (!EmailUtils.isValid(value)) return 'Email inválido!';
   return true;
 }
+
+watch(form, () => {
+  (Object.keys(form.value) as FormField[]).forEach((field) => {
+    truncateInput(field);
+  });
+});
+
+const truncateInput = (field: FormField) => {
+  if (form.value[field].length > maxLengthToInputs) {
+    form.value[field] = form.value[field].substring(0, maxLengthToInputs);
+  }
+};
 
 </script>
 
@@ -43,21 +81,32 @@ const validateEmail = (value: string) => {
                 v-model="form.email"
                 :rules="[validateEmail]"
                 label="Email"
+                :disabled="isLoading"
+                :max-length="50"
+                counter
+                @input="truncateInput('email')"
             />
   
             <VaInput
                 v-model="form.password"
                 :rules="[(value) => (value && value.length > 0) || 'Digite a sua senha!']"
                 label="Senha"
+                :disabled="isLoading"
+                :max-length="50"
+                counter
+                @input="truncateInput('password')"
             />
   
             <div class="flex flex-row justify-between">
-              <VaButton preset="primary" @click="goToHome()" class="w-28" >
+              <VaButton :disabled="isLoading" preset="primary" @click="goTo('/')" class="w-28" >
               Sair
               </VaButton>
   
               <VaButton :disabled="!isValid" @click="validate() && submit()" class="w-28">
-              Acessar
+                <div>
+                  <VaIcon v-if="isLoading" class="" name="refresh" spin />
+                  <p v-else >Entrar</p>
+                </div>
               </VaButton>
             </div>
             
