@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { useForm } from 'vuestic-ui';
 import { useRouter } from 'vue-router';
 import autenticationService from "../../services/autentication";
@@ -10,6 +10,10 @@ const toaster = createToaster();
 
 const isLoading = ref(false);
 const isSubmited = ref(false)
+
+const maxLengthToInputs = 50
+
+type FormField = 'name' | 'email' | 'password' | 'confirmPassword';
 
 const { isValid, validate, reset, resetValidation } = useForm('formRef')
 const router = useRouter();
@@ -43,6 +47,27 @@ const validateEmail = (value: string) => {
   return true;
 }
 
+const maxInputLength = (maxLength: number) => {
+  return (value: string) => {
+    if(value.length > maxLength){
+      return `Máximo de ${maxLength} caracteres!`
+    }
+    return true;
+  }
+}
+
+watch(form, () => {
+  (Object.keys(form.value) as FormField[]).forEach((field) => {
+    truncateInput(field);
+  });
+});
+
+const truncateInput = (field: FormField) => {
+  if (form.value[field].length > maxLengthToInputs) {
+    form.value[field] = form.value[field].substring(0, maxLengthToInputs);
+  }
+};
+
 </script>
 
 <template>
@@ -62,6 +87,9 @@ const validateEmail = (value: string) => {
                 :rules="[(value) => (value && value.length > 0) || 'Digite o seu nome!']"
                 label="Nome"
                 :disabled="isLoading"
+                :max-length="50"
+                counter
+                @input="truncateInput('name')"
             />
 
             <VaInput
@@ -69,6 +97,9 @@ const validateEmail = (value: string) => {
                 :rules="[validateEmail]"
                 label="Email"
                 :disabled="isLoading"
+                :max-length="50"
+                counter
+                @input="truncateInput('email')"
             />
 
             <VaInput
@@ -76,6 +107,9 @@ const validateEmail = (value: string) => {
                 :rules="[(value) => (value && value.length > 0) || 'Digite a sua senha!']"
                 label="Senha"
                 :disabled="isLoading"
+                :max-length="50"
+                counter
+                @input="truncateInput('password')"
             />
 
             <VaInput
@@ -83,6 +117,9 @@ const validateEmail = (value: string) => {
                 :rules="[(value) => (value === form.password) || 'Confirme a sua senha!']"
                 label="Confirmar Senha"
                 :disabled="form.password.length === 0 || isLoading"
+                :max-length="50"
+                counter
+                @input="truncateInput('confirmPassword')"
             />
 
             <div class="flex flex-row justify-between">

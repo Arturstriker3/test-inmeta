@@ -1,11 +1,15 @@
 <script setup lang="ts">
-import { reactive } from 'vue';
+import { ref } from 'vue';
 import { useForm } from 'vuestic-ui';
 import { useRouter } from 'vue-router';
+import { createToaster } from "@meforma/vue-toaster";
+import EmailUtils from '../../utils/email.utils';
+
+const toaster = createToaster();
 
 const { isValid, validate, reset, resetValidation } = useForm('formRef')
 const router = useRouter();
-const form = reactive({
+const form = ref({
     email: '',
     password: '',
 })
@@ -15,6 +19,13 @@ const goToHome = () => {
 };
 
 const submit = () => alert('Form submitted!')
+
+const validateEmail = (value: string) => {
+  if (value.length === 0) return 'Digite o seu email!';
+  if (!EmailUtils.isValid(value)) return 'Email inválido!';
+  return true;
+}
+
 </script>
 
 <template>
@@ -30,7 +41,7 @@ const submit = () => alert('Form submitted!')
   
             <VaInput
                 v-model="form.email"
-                :rules="[(value) => (value && value.length > 0) || 'Digite o seu email!']"
+                :rules="[validateEmail]"
                 label="Email"
             />
   
