@@ -1,6 +1,5 @@
 import apiService from "../api/api-service";
 import axiosInstance from "../api/axios";
-import currencyUtils from "../utils/currency.utils";
 
 class userAutenticationService {
     urlBase = apiService.autentication;

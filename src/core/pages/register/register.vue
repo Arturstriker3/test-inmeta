@@ -2,14 +2,14 @@
 import { ref } from 'vue';
 import { useForm } from 'vuestic-ui';
 import { useRouter } from 'vue-router';
-import { useAlertStore } from "../../stores/alert";
 import autenticationService from "../../services/autentication";
 import { createToaster } from "@meforma/vue-toaster";
+import EmailUtils from '../../utils/email.utils';
 
 const toaster = createToaster();
 
-const alertContext = useAlertStore();
 const isLoading = ref(false);
+const isSubmited = ref(false)
 
 const { isValid, validate, reset, resetValidation } = useForm('formRef')
 const router = useRouter();
@@ -28,13 +28,19 @@ const submit = () => {
   isLoading.value = true;
   autenticationService.register({ name: form.value.name, email: form.value.email, password: form.value.password})
     .then(() => {
-        alertContext.openAlert({ message: "Nova conta cadastrada com sucesso!", severity: "success", time: 3000 });
+        toaster.success(`Nova conta cadastrada com sucesso!`);
     })
-    .finally(() => isLoading.value = false);
+    .catch(() => {
+        resetValidation()
+        reset()
+    })
+    .finally(() => {isLoading.value = false, isSubmited.value = true});
 }
 
-const handlePrint = () => {
-  toaster.success(`Hey! I'm here`);
+const validateEmail = (value: string) => {
+  if (value.length === 0) return 'Digite o seu email!';
+  if (!EmailUtils.isValid(value)) return 'Email inválido!';
+  return true;
 }
 
 </script>
@@ -48,47 +54,65 @@ const handlePrint = () => {
       <div class="mb-6">
         <VaDivider />
       </div>
-      <VaForm ref="formRef" class="flex flex-col w- gap-2">
-          <VaInput
-              v-model="form.name"
-              :rules="[(value) => (value && value.length > 0) || 'Digite o seu nome!']"
-              label="Nome"
-          />
+      <div>
+        <div v-if="!isSubmited" >
+          <VaForm ref="formRef" class="flex flex-col w- gap-2">
+            <VaInput
+                v-model="form.name"
+                :rules="[(value) => (value && value.length > 0) || 'Digite o seu nome!']"
+                label="Nome"
+                :disabled="isLoading"
+            />
 
-          <VaInput
-              v-model="form.email"
-              :rules="[(value) => (value && value.length > 0) || 'Digite o seu email!']"
-              label="Email"
-          />
+            <VaInput
+                v-model="form.email"
+                :rules="[validateEmail]"
+                label="Email"
+                :disabled="isLoading"
+            />
 
-          <VaInput
-              v-model="form.password"
-              :rules="[(value) => (value && value.length > 0) || 'Digite a sua senha!']"
-              label="Senha"
-          />
+            <VaInput
+                v-model="form.password"
+                :rules="[(value) => (value && value.length > 0) || 'Digite a sua senha!']"
+                label="Senha"
+                :disabled="isLoading"
+            />
 
-          <VaInput
-              v-model="form.confirmPassword"
-              :rules="[(value) => (value === form.password) || 'Confirme a sua senha!']"
-              label="Confirmar Senha"
-              :disabled="form.password.length === 0"
-          />
+            <VaInput
+                v-model="form.confirmPassword"
+                :rules="[(value) => (value === form.password) || 'Confirme a sua senha!']"
+                label="Confirmar Senha"
+                :disabled="form.password.length === 0 || isLoading"
+            />
 
-          <div class="flex flex-row justify-between">
-            <VaButton preset="primary" @click="handlePrint()" class="w-28" >
-            Print
-            </VaButton>
+            <div class="flex flex-row justify-between">
+              <VaButton :disabled="isLoading" preset="primary" @click="goToHome()" class="w-28" >
+                <div>
+                  <p :disabled="isLoading" >Sair</p>
+                </div>
+              </VaButton>
 
-            <VaButton preset="primary" @click="goToHome()" class="w-28" >
-            Sair
-            </VaButton>
+              <VaButton :disabled="!isValid || isLoading" @click="validate() && submit()" class="w-28">
+                <div>
+                  <VaIcon v-if="isLoading" class="" name="refresh" spin />
+                  <p v-else >Registrar</p>
+                </div>
+              </VaButton>
+            </div>
+          </VaForm>
+        </div>
 
-            <VaButton :disabled="!isValid" @click="validate() && submit()" class="w-28">
-            Registrar
-            </VaButton>
+        <div v-else class="flex flex-col gap-4">
+          <div class="flex justify-center">
+            <VaBadge class="font-" text="Sua conta foi registrada!" color="success"/>
           </div>
-          
-      </VaForm>
+          <VaButton :disabled="isLoading" preset="primary" @click="goToHome()" class="w-28" >
+            <div>
+              <p :disabled="isLoading" >Sair</p>
+            </div>
+          </VaButton>
+        </div>
+      </div>
     </VaCard>
   </div>
 </template>
