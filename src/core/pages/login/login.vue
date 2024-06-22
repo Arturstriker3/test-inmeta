@@ -114,7 +114,7 @@ const truncateInput = (field: FormField) => {
               Sair
               </VaButton>
   
-              <VaButton :disabled="!isValid" @click="validate() && submit()" class="w-28">
+              <VaButton :disabled="!isValid || isLoading" @click="validate() && submit()" class="w-28">
                 <div>
                   <VaIcon v-if="isLoading" class="" name="refresh" spin />
                   <p v-else >Entrar</p>
