@@ -1,6 +1,6 @@
 export const interfacePages = [
-    { name: "Interface", path: "/", showWhenAuth: true },
-    { name: "Perfil", path: "/", showWhenAuth: true },
-    { name: "Login", path: "/login", showWhenAuth: false },
-    { name: "Registro", path: "/register", showWhenAuth: false },
+    { name: "Login", path: "/login", showWhenAuth: false, showNavbar: false},
+    { name: "Registro", path: "/register", showWhenAuth: false, showNavbar: false},
+    { name: "Interface", path: "/", showWhenAuth: true, showNavbar: true},
+    { name: "Perfil", path: "/", showWhenAuth: true, showNavbar: true},
 ];
