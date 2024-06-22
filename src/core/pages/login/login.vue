@@ -121,7 +121,6 @@ const truncateInput = (field: FormField) => {
                 </div>
               </VaButton>
             </div>
-            
         </VaForm>
       </VaCard>
     </div>
