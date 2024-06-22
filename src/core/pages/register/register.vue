@@ -1,12 +1,15 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import { useForm } from 'vuestic-ui';
 import { useRouter } from 'vue-router';
 import autenticationService from "../../services/autentication";
 import { createToaster } from "@meforma/vue-toaster";
 import EmailUtils from '../../utils/email.utils';
+import { userAuthStore } from '../../stores/auth';
 
 const toaster = createToaster();
+
+const userAuth = userAuthStore();
 
 const isLoading = ref(false);
 const isSubmited = ref(false)
@@ -62,6 +65,10 @@ const truncateInput = (field: FormField) => {
     form.value[field] = form.value[field].substring(0, maxLengthToInputs);
   }
 };
+
+onMounted(() => {
+  userAuth.initializeFromLocalStorage();
+});
 
 </script>
 

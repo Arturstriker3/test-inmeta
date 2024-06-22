@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import { useForm } from 'vuestic-ui';
 import { useRouter } from 'vue-router';
 import { createToaster } from "@meforma/vue-toaster";
@@ -65,6 +65,10 @@ const truncateInput = (field: FormField) => {
     form.value[field] = form.value[field].substring(0, maxLengthToInputs);
   }
 };
+
+onMounted(() => {
+  store.initializeFromLocalStorage();
+});
 
 </script>
 

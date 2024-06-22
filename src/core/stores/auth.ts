@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import router from '../router/pages';
+import { interfacePages } from '../interface/interface';
 
 export const userAuthStore = defineStore("auth", {
     state: () => ({
@@ -39,6 +40,13 @@ export const userAuthStore = defineStore("auth", {
                 this.$state.user = JSON.parse(storedUser);
                 this.$state.accessToken = storedToken;
                 this.$state.isAuth = true;
+
+                const currentRoute = router.currentRoute.value.path;
+                const routeRequiresAuth = interfacePages.find(page => page.path === currentRoute && page.showWhenAuth);
+
+                if (!routeRequiresAuth) {
+                    router.push('/');
+                }
             }
         }
     }

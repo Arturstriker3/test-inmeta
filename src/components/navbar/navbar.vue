@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { RouterView ,useRouter, useRoute } from 'vue-router';
 import { userAuthStore } from '../../core/stores/auth';
 import { interfacePages } from '../../core/interface/interface';
@@ -25,6 +25,10 @@ const shouldShowNavbar = computed(() => {
 const handleLogout = () => {
   userAuth.logout();
 };
+
+onMounted(() => {
+  userAuth.initializeFromLocalStorage();
+});
 
 const projectName = ref('Vueduelist');
 
