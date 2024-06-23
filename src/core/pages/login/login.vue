@@ -90,7 +90,7 @@ onMounted(() => {
                 :disabled="isLoading"
                 :max-length="50"
                 counter
-                @input="truncateInput('email')"
+
             />
   
             <VaInput
