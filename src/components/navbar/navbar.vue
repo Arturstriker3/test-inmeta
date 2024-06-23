@@ -1,10 +1,12 @@
 <script setup lang="ts">
 
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { RouterView ,useRouter, useRoute } from 'vue-router';
 import { userAuthStore } from '../../core/stores/auth';
 import { interfacePages } from '../../core/interface/interface';
+import { useToast } from 'vuestic-ui'
 
+const { notify, close } = useToast()
 const router = useRouter();
 const route = useRoute();
 const userAuth = userAuthStore();
@@ -28,11 +30,56 @@ const handleLogout = () => {
 
 onMounted(() => {
   userAuth.initializeFromLocalStorage()
+  window.addEventListener('scroll', handleScroll);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', handleScroll);
+  closeToastIfOpen();
 });
 
 const mobileMenuVisible = ref(false);
 const toggleMobileMenu = () => {
   mobileMenuVisible.value = !mobileMenuVisible.value;
+};
+
+const scrollToTop = () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+let toastId: any = null;
+const showUp = () => {
+  if (!toastId) {
+    toastId = notify({
+      message: 'Clique aqui para voltar ao topo',
+      position: 'bottom-left',
+      closeable: false,
+      onClick: scrollToTop,
+      duration: 0,
+    });
+  }
+};
+
+const hideToast = () => {
+  if (toastId) {
+    close(toastId);
+    toastId = null;
+  }
+};
+
+const handleScroll = () => {
+  if (window.scrollY > 800) {
+    showUp();
+  } else {
+    hideToast();
+  }
+};
+
+const closeToastIfOpen = () => {
+  if (toastId) {
+    close(toastId);
+    toastId = null;
+  }
 };
 
 const projectName = ref('Vueduelist');
@@ -41,7 +88,7 @@ const projectName = ref('Vueduelist');
 
 <template>
     <div class="w-screen h-screen ">
-      <div v-if="shouldShowNavbar">
+      <div class="sticky top-0 z-50" v-if="shouldShowNavbar">
         <div class='flex justify-between py-6 px-4 lg:px-16 items-center bg-[#154EC1]'>
           <div class="w-screen bg-[#154EC1] flex justify-between text-white items-center" >
             <span class='text-lg font-semibold'>

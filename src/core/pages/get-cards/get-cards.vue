@@ -9,7 +9,7 @@ const toaster = createToaster();
 
 const isLoading = ref(false);
 
-const { isValid, validate, reset, resetValidation } = useForm('formRef')
+const { isValid, reset } = useForm('formRef')
 const maxLengthToInputs = 100
 type FormField = 'cardText';
 
@@ -23,6 +23,7 @@ type Card = {
     description: string;
     imageUrl?: string;
     createdAt: string;
+    loaded: boolean;
 };
 
 const cardsToShow = ref<Card[]>([]);
@@ -49,7 +50,9 @@ const getData = () => {
   isLoading.value = true;
   CardsService.getAvailableCards({})
     .then((response) => {
-      cardsToShow.value = response.data.list;
+      cardsToShow.value = response.data.list.filter((card: Card) =>
+        card.id && card.name && card.description && card.imageUrl !== null
+      );
       moreContent.value = response.data.more;
     })
     .catch(() => {
@@ -109,14 +112,33 @@ onMounted(() => {
         </div>
         
         <div v-else>
-          <div class="grid grid-cols-3 gap-4 overflow-auto">
-            <div v-for="card in cardsToShow" :key="card.id" class="bg-white rounded-lg shadow-md p-4">
+          <div class="grid grid-cols-5 gap-4 overflow-auto">
+            <div v-for="card in cardsToShow" :key="card.id" class="grid grid-cols-1 gap-2 items-center bg-slate-100 rounded-lg shadow-md p-4">
               <p class="text-lg font-semibold">{{ card.name }}</p>
+              <div v-if="!card.loaded">
+                <VaProgressCircle indeterminate size="large" />
+              </div>  
+              <VaImage
+                fit="cover"
+                :src="card.imageUrl"
+                lazy
+                @loaded="card.loaded = true"
+                class="rounded-lg va-image-custom"
+              />
               <p>{{ card.description }}</p>
-              <img v-if="card.imageUrl" :src="card.imageUrl" alt="Card Image" class="my-2 rounded-lg">
               <p class="text-gray-500">{{ dateUtils.formatDateTime(card.createdAt) }}</p>
             </div>
           </div>
         </div>
     </div>
 </template>
+
+<style scoped>
+.va-image-custom {
+  aspect-ratio: 223 / 310; /* Define a proporção desejada */
+  max-width: 100%; /* Define a largura máxima */
+  max-height: 310px; /* Define a altura máxima */
+  width: auto; /* Permite que a largura seja ajustada automaticamente */
+  height: auto; /* Permite que a altura seja ajustada automaticamente */
+}
+</style>
