@@ -17,9 +17,17 @@ const form = ref({
     cardText: '',
 })
 
-const cardsToShow = ref({
-  
-});
+type Card = {
+    id: number;
+    name: string;
+    description: string;
+    imageUrl?: string;
+    createdAt: string;
+};
+
+const cardsToShow = ref<Card[]>([]);
+
+const moreContent = ref(false);
 
 watch(form, () => {
   (Object.keys(form.value) as FormField[]).forEach((field) => {
@@ -42,8 +50,7 @@ const getData = () => {
   CardsService.getAvailableCards({})
     .then((response) => {
       cardsToShow.value = response.data.list;
-
-      console.log(cardsToShow.value)
+      moreContent.value = response.data.more;
     })
     .catch(() => {
         reset()
