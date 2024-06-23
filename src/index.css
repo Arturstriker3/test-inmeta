@@ -6,9 +6,5 @@
 @tailwind utilities;
 
 body {
-    /* margin: 8px;
-    padding: 8px; */
-    min-width: 320px;
-    min-height: 100vh;
     overflow: hidden;
 }

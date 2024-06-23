@@ -27,7 +27,7 @@ const handleLogout = () => {
 };
 
 onMounted(() => {
-  userAuth.initializeFromLocalStorage();
+  userAuth.initializeFromLocalStorage()
 });
 
 const projectName = ref('Vueduelist');
@@ -83,8 +83,9 @@ const projectName = ref('Vueduelist');
           </button>
         </div>
       </div>
-      <main class="z-0 m-2 p-2" >
+      <main class="flex z-0 m-2 p-2" >
         <RouterView />
       </main>
+      
     </div>
 </template>
