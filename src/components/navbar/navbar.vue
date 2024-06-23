@@ -67,7 +67,7 @@ const projectName = ref('Vueduelist');
           </div>
           
 
-          <button class='space-y-1 group md:hidden z-50'>
+          <button class='space-y-1 group md:hidden z-50 text-white'>
             <div class="space-y-1" :disabled="mobileMenuVisible" @click="toggleMobileMenu">
               <div class='w-6 h-1 bg-white'></div>
               <div class='w-6 h-1 bg-white'></div>
