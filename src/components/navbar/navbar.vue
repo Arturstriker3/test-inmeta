@@ -33,7 +33,6 @@ onMounted(() => {
 const mobileMenuVisible = ref(false);
 const toggleMobileMenu = () => {
   mobileMenuVisible.value = !mobileMenuVisible.value;
-  console.log(mobileMenuVisible.value);
 };
 
 const projectName = ref('Vueduelist');
@@ -43,27 +42,30 @@ const projectName = ref('Vueduelist');
 <template>
     <div class="w-screen h-screen ">
       <div v-if="shouldShowNavbar">
-        <div class='w-screen py-6 px-5 lg:px-16 bg-[#154EC1] flex justify-between text-white items-center'>
-          <span class='text-lg font-semibold'>
-            {{ projectName }}
-          </span>
-          
-          <ul class='hidden md:flex items-center space-x-5'>        
-              <li v-for="page in filteredPages" :key="page.path" @click="navigateTo(page.path)">
-                  <VaButton>
-                      {{ page.name }}
+        <div class='flex justify-between py-6 px-4 lg:px-16 items-center bg-[#154EC1]'>
+          <div class="w-screen bg-[#154EC1] flex justify-between text-white items-center" >
+            <span class='text-lg font-semibold'>
+              {{ projectName }}
+            </span>
+            
+            <ul class='hidden md:flex items-center space-x-5'>        
+                <li v-for="page in filteredPages" :key="page.path" @click="navigateTo(page.path)">
+                    <VaButton>
+                        {{ page.name }}
+                    </VaButton>
+                </li>
+                <li v-if="userAuth.GetIsAuth" >
+                  <VaButton @click="handleLogout">
+                    <VaIcon
+                      :name="'logout'"
+                      color="#ffffff"
+                      size="large"
+                    />
                   </VaButton>
-              </li>
-              <li v-if="userAuth.GetIsAuth" >
-                <VaButton @click="handleLogout">
-                  <VaIcon
-                    :name="'logout'"
-                    color="#ffffff"
-                    size="large"
-                  />
-                </VaButton>
-              </li>
-          </ul>
+                </li>
+            </ul>
+          </div>
+          
 
           <button class='space-y-1 group md:hidden z-50'>
             <div class="space-y-1" :disabled="mobileMenuVisible" @click="toggleMobileMenu">
@@ -78,7 +80,7 @@ const projectName = ref('Vueduelist');
                 <div class='w-6 h-1 rotate-45 absolute bg-white'></div>
                 <div class='w-6 h-1 -rotate-45 absolute bg-white'></div>
               </button>
-              <li v-for="page in filteredPages" :key="page.path" class='flex justify-center w-full py-4 hover:bg-slate-300' @click="() => { navigateTo(page.path);}">
+              <li v-for="page in filteredPages" :key="page.path" class='flex justify-center w-full py-4 hover:bg-slate-300' @click="() => { navigateTo(page.path); toggleMobileMenu()}">
                   {{ page.name }}
               </li>
               <li  v-if="userAuth.GetIsAuth" class='flex justify-center w-full py-4 hover:bg-slate-300' @click="handleLogout">
