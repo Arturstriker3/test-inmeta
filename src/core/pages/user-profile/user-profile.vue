@@ -128,7 +128,7 @@ onMounted(() => {
                         </div>
 
                         <div class="flex flex-col items-center justify-center" >
-                          <p class="text-center text-lg font-semibold" >Minhas Trades</p>
+                          <p class="text-center text-lg font-semibold" >Minhas Solicitações</p>
                         </div>
 
                         <div class="mb-6">
