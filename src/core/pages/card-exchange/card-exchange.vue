@@ -90,6 +90,14 @@ const confirmBorderStyle = computed(() => {
   }
 });
 
+const resetData = () => {
+    userCards.value = [];
+    availableCards.value = [];
+    userSelectedCardsToSend.value = [];
+    userSelectedCardsToReceive.value = [];
+    getCardsData();
+}
+
 const sendUserTrade = () => {
     if (!isConfirmDisabled.value && !isTrading.value) {
         isTrading.value = true;
@@ -103,6 +111,7 @@ const sendUserTrade = () => {
                 position: 'top-left',
                 color: 'success',
             });
+            resetData();
         })
         .catch(() => {
             toaster.error('Falha ao criar a solicitação de troca!');
