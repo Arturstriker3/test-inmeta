@@ -1,4 +1,4 @@
-# Desafio Técnico: Aplicativo Web de Criação e Pagamento de Cobranças PIX
+# Desafio Técnico: Aplicativo Web Vueduelist
 
 ## Abrir Api para desativar hibernação
 ```
