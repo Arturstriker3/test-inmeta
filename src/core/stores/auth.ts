@@ -10,7 +10,8 @@ export const userAuthStore = defineStore("auth", {
         accessToken: null as string | null
     }),
     getters: {
-        GetIsAuth: (state) => state.isAuth
+        GetIsAuth: (state) => state.isAuth,
+        GetUserId: (state) => state.user
     },
     actions: {
         login(user: object, token: string) {

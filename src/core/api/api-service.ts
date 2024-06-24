@@ -4,6 +4,7 @@ const apiService = {
     autentication: `${urlBase}`,
     cards: `${urlBase}`,
     trade: `${urlBase}`,
+    user: `${urlBase}`,
 }
 
 export default apiService;

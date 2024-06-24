@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 import { ref, onMounted, computed } from 'vue';
 import TradeService from "../../services/trade";
 import CardsService from "../../services/cards";
@@ -141,7 +140,7 @@ const sendUserTrade = () => {
                 </div>
                 <div v-else>
                     <section id="Projects"
-                    class="w-fit mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-center justify-center gap-y-16 gap-x-14 mb-10">
+                    class="w-fit mx-auto grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 justify-items-center justify-center gap-y-16 gap-x-14 mb-10">
                         <div class="w-72 bg-slate-50 shadow-md rounded-xl border border-gray-300">
                             <div class="text-center py-2">
                                 <p class="text-lg font-bold text-black truncate block capitalize">Minhas Cartas</p>

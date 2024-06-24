@@ -16,7 +16,13 @@ class tradeService {
     displayAllTrades({ rpp = 999999, page = 1 } = {}) {
         const query = `?rpp=${rpp}&page=${page}`;
 
-        return axiosInstance.get(`${this.urlBase}/cards${query}`);
+        return axiosInstance.get(`${this.urlBase}/trades${query}`);
+    }
+
+    deleteUserTrade(tradeId: string) {
+        const idToDelete = `${tradeId}`;
+
+        return axiosInstance.delete(`${this.urlBase}/trades/${idToDelete}`);
     }
 }
 

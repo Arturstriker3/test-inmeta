@@ -89,7 +89,7 @@ const projectName = ref('Vueduelist');
 <template>
     <div class="w-screen h-screen ">
       <div class="sticky top-0 z-50" v-if="shouldShowNavbar">
-        <div class='flex justify-between py-6 px-4 lg:px-16 items-center bg-[#154EC1]'>
+        <div class='flex justify-between py-6 px-6 lg:px-16 items-center bg-[#154EC1]'>
           <div class="w-screen bg-[#154EC1] flex justify-between text-white items-center" >
             <span class='text-lg font-semibold'>
               {{ projectName }}
