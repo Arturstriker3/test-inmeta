@@ -3,5 +3,6 @@ export const interfacePages = [
     { name: "Registro", path: "/register", showWhenAuth: false, showNavbar: false},
     { name: "Home", path: "/", showWhenAuth: true, showNavbar: true},
     { name: "Adquirir", path: "/get-cards", showWhenAuth: true, showNavbar: true},
+    { name: "Troca", path: "/card-exchange", showWhenAuth: true, showNavbar: true},
     { name: "Perfil", path: "/", showWhenAuth: true, showNavbar: true},
 ];

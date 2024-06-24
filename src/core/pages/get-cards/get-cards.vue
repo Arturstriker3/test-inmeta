@@ -83,6 +83,7 @@ const buyTheCard = (cardId: string) => {
 }
 
 onMounted(() => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
   getData()
 });
 
