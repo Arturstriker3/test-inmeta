@@ -51,7 +51,6 @@ npm run dev
 
 **Identidade Visual**
 <div align="center">
-![image](https://github.com/Arturstriker3/test-inmeta/assets/59231364/4b949bdf-19f3-4cad-a204-f070f83f40d0)
-<img src="https://github.com/Arturstriker3/test-delbank/assets/59231364/eaa00b48-96f4-4b3d-84e5-64f50ffc31d7" width="auto" height="auto" />
+<img src="https://github.com/Arturstriker3/test-inmeta/assets/59231364/4b949bdf-19f3-4cad-a204-f070f83f40d0" width="auto" height="auto" />
 </div>
 <br/>
