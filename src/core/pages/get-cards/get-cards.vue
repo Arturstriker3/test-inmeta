@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useForm } from 'vuestic-ui';
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, computed } from 'vue';
 import CardsService from "../../services/cards";
 import { createToaster } from "@meforma/vue-toaster";
 import dateUtils from '@/core/utils/date.utils';
@@ -66,12 +66,20 @@ onMounted(() => {
   getData()
 });
 
+const filteredCards = computed(() => {
+  const searchText = form.value.cardText.toLowerCase();
+  return cardsToShow.value.filter(card => 
+    card.name.toLowerCase().includes(searchText) || 
+    card.description.toLowerCase().includes(searchText)
+  );
+});
+
 </script>
 
 <template>
-    <div class="flex flex-col w-screen h-screen p-4 gap-10" >
+    <div class="flex flex-col w-screen h-screen px-10 py-4 gap-10" >
         <div class="flex justify-center items-center" >
-            <VaCard class="mt-4 p-4 rounded-lg w-screen mx-auto" >
+            <VaCard class="mt-4 px-6 py-4 rounded-lg w-screen mx-auto" >
               <div class="flex flex-col items-center justify-center" >
                 <p class="text-center text-lg font-semibold" >Adquirir Cartas</p>
               </div>
@@ -101,7 +109,7 @@ onMounted(() => {
         <div v-else>
           <section id="Projects"
           class="w-fit mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5  justify-items-center justify-center gap-y-16 gap-x-14 mb-10">
-            <div v-for="card in cardsToShow" :key="card.id" class="w-72 bg-slate-50 shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl border border-gray-300">
+            <div v-for="card in filteredCards" :key="card.id" class="w-72 bg-slate-50 shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl border border-gray-300">
               <div class="text-center py-2">
                 <p class="text-lg font-bold text-black truncate block capitalize">{{ card.name }}</p>
               </div>
