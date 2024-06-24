@@ -16,7 +16,7 @@ const navigateTo = (path: string) => {
 };
 
 const filteredPages = computed(() => {
-  return interfacePages.filter(page => page.showWhenAuth === userAuth.GetIsAuth);
+  return interfacePages.filter(page => (page.showWhenAuth === userAuth.GetIsAuth) || (page.name === "Home"));
 });
 
 const shouldShowNavbar = computed(() => {
@@ -91,7 +91,7 @@ const projectName = ref('Vueduelist');
       <div class="sticky top-0 z-50" v-if="shouldShowNavbar">
         <div class='flex justify-between py-6 px-6 lg:px-16 items-center bg-[#154EC1]'>
           <div class="w-screen bg-[#154EC1] flex justify-between text-white items-center" >
-            <span class='text-lg font-semibold'>
+            <span class='text-xl font-sans font-bold'>
               {{ projectName }}
             </span>
             

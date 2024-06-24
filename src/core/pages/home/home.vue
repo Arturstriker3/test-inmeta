@@ -3,15 +3,22 @@ import { ref, onMounted } from 'vue';
 import { userAuthStore } from '../../stores/auth';
 import TradeService from "../../services/trade";
 import { createToaster } from "@meforma/vue-toaster";
-import { useToast, VaCard, VaIcon } from 'vuestic-ui'
 import dateUtils from '@/core/utils/date.utils';
 
 const isLoading = ref(false);
 
 const toaster = createToaster();
-const { notify } = useToast()
 
 const userAuth = userAuthStore();
+
+const userName = ref('');
+const getUserName = () => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+        const user = JSON.parse(storedUser);
+        userName.value = user.name;
+    }
+}
 
 const allTrades = ref<any[]>([]);
 
@@ -42,6 +49,7 @@ import image2 from '../../../assets/img/carrousel2.webp';
 const carrouselItems =  [image1, image2, image3];
 
 onMounted(() => {
+    getUserName();
     getTrades();
 });
 
@@ -51,6 +59,9 @@ onMounted(() => {
     <div class="flex flex-col w-screen h-screen px-10 py-4 gap-10" >
         <div class="flex justify-center items-center" >
             <VaCard class="mt-4 px-6 py-4 rounded-lg w-screen mx-auto" >
+                <div v-if="userAuth.GetIsAuth" class="mb-4" >
+                    <p class="text-left text-lg font-semibold" >Olá, {{ userName }} </p>
+                </div>
                 <div v-if="isLoading" class="flex justify-center items-center">
                   <VaProgressCircle indeterminate
                   size="15rem"
