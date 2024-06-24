@@ -1,4 +1,4 @@
-const stringMapper = (obj: Object) => {
+const stringMapper = (obj: Record<string, any>) => {
     if (!obj) return "";
     const properties = Object.keys(obj);
     if (!properties.length) return '';

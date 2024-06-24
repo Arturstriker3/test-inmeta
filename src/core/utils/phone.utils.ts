@@ -1,5 +1,5 @@
 class PhoneUtils {
-    formatByDddAndNumber({ ddd, number }) {
+    formatByDddAndNumber({ ddd, number }: { ddd: string, number: string }) {
         if (ddd && number) {
             const firstDigit = number[0]; 
             const firstColumnNumber = number.slice(1, 5);
