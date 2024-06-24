@@ -10,6 +10,12 @@ class cardsService {
         return axiosInstance.get(`${this.urlBase}/cards${query}`);
     }
 
+    buyTheCard(buyedCardId: string) {
+        const cardIds: any = []
+        cardIds.push(buyedCardId)
+        return axiosInstance.post(`${this.urlBase}/me/cards` , { cardIds });
+    }
+
     
 }
 

@@ -4,12 +4,15 @@ import { ref, onMounted, watch, computed } from 'vue';
 import CardsService from "../../services/cards";
 import { createToaster } from "@meforma/vue-toaster";
 import dateUtils from '@/core/utils/date.utils';
+import { useToast } from 'vuestic-ui'
 
 const toaster = createToaster();
+const { notify } = useToast()
 
 const isLoading = ref(false);
+const isBuyingCard = ref(false);
 
-const { isValid, reset } = useForm('formRef')
+const { reset } = useForm('formRef')
 const maxLengthToInputs = 100
 type FormField = 'cardText';
 
@@ -18,7 +21,7 @@ const form = ref({
 })
 
 type Card = {
-    id: number;
+    id: string;
     name: string;
     description: string;
     imageUrl?: string;
@@ -60,6 +63,23 @@ const getData = () => {
         toaster.error('Falha ao carregar os cards.');
     })
     .finally(() => {isLoading.value = false});
+}
+
+const buyTheCard = (cardId: string) => {
+  isBuyingCard.value = true;
+  CardsService.buyTheCard(cardId)
+    .then(() => {
+      notify({
+      message: 'Carta adquirida com sucesso!',
+      position: 'top-left',
+      color: 'success',
+      });
+    })
+    .catch(() => {
+        reset()
+        toaster.error('Falha ao adquirir o card!');
+    })
+    .finally(() => {isBuyingCard.value = false});
 }
 
 onMounted(() => {
@@ -138,6 +158,8 @@ const filteredCards = computed(() => {
                       <div class="ml-auto">
                         <VaButton
                           round
+                          :disabled="!card.loaded || isBuyingCard"
+                          @click="() => buyTheCard(card.id)"
                         >
                           <VaIcon
                             :name="'add'"
