@@ -71,7 +71,7 @@ onMounted(() => {
 <template>
     <div class="flex flex-col w-screen h-screen p-4 gap-10" >
         <div class="flex justify-center items-center" >
-            <VaCard class="p-4 rounded-lg w-full mx-auto" >
+            <VaCard class="mt-4 p-4 rounded-lg w-screen mx-auto" >
               <div class="flex flex-col items-center justify-center" >
                 <p class="text-center text-lg font-semibold" >Adquirir Cartas</p>
               </div>
@@ -89,19 +89,6 @@ onMounted(() => {
                       counter
                       @input="truncateInput('cardText')"
                   />
-        
-                  <div class="flex flex-row justify-between">
-                    <VaButton :disabled="isLoading" preset="primary" class="w-28" >
-                    Sair
-                    </VaButton>
-        
-                    <VaButton :disabled="!isValid || isLoading" class="w-28">
-                      <div>
-                        <VaIcon v-if="isLoading" class="" name="refresh" spin />
-                        <p v-else >Entrar</p>
-                      </div>
-                    </VaButton>
-                  </div>
               </VaForm>
             </VaCard>
         </div>
@@ -112,33 +99,50 @@ onMounted(() => {
         </div>
         
         <div v-else>
-          <div class="grid grid-cols-5 gap-4 overflow-auto">
-            <div v-for="card in cardsToShow" :key="card.id" class="grid grid-cols-1 gap-2 items-center bg-slate-100 rounded-lg shadow-md p-4">
-              <p class="text-lg font-semibold">{{ card.name }}</p>
-              <div v-if="!card.loaded">
-                <VaProgressCircle indeterminate size="large" />
-              </div>  
-              <VaImage
-                fit="cover"
-                :src="card.imageUrl"
-                lazy
-                @loaded="card.loaded = true"
-                class="rounded-lg va-image-custom"
-              />
-              <p>{{ card.description }}</p>
-              <p class="text-gray-500">{{ dateUtils.formatDateTime(card.createdAt) }}</p>
+          <section id="Projects"
+          class="w-fit mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5  justify-items-center justify-center gap-y-16 gap-x-14 mb-10">
+            <div v-for="card in cardsToShow" :key="card.id" class="w-72 bg-slate-50 shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl border border-gray-300">
+              <div class="text-center py-2">
+                <p class="text-lg font-bold text-black truncate block capitalize">{{ card.name }}</p>
+              </div>
+
+              <div class="flex gap-4">
+                <VaImage
+                  fit="contain"
+                  class="h-80 w-72 object-cover rounded-t-xl "
+                  :src="card.imageUrl"
+                  lazy
+                  @loaded="card.loaded = true"
+                  >
+                  <template #loader>
+                    <VaProgressCircle indeterminate />
+                  </template>
+                </VaImage>
+              </div>
+              
+              <div class="px-4 py-3 w-72">
+                  <div class="min-h-36 text-justify" >
+                    <span class="text-gray-400 mr-3 uppercase text-xs">{{card.description}}</span>
+                  </div>
+                  
+                  <div class="flex items-center">
+                      <p class="text-xs font-semibold text-black cursor-auto my-3">{{ dateUtils.formatDateTime(card.createdAt) }}</p>
+                      <div class="ml-auto">
+                        <VaButton
+                          round
+                        >
+                          <VaIcon
+                            :name="'add'"
+                            color="#ffffff"
+                            size="small"
+                          />
+                        </VaButton>
+                        
+                      </div>
+                  </div>
+              </div>
             </div>
-          </div>
+          </section>
         </div>
     </div>
 </template>
-
-<style scoped>
-.va-image-custom {
-  aspect-ratio: 223 / 310; /* Define a proporção desejada */
-  max-width: 100%; /* Define a largura máxima */
-  max-height: 310px; /* Define a altura máxima */
-  width: auto; /* Permite que a largura seja ajustada automaticamente */
-  height: auto; /* Permite que a altura seja ajustada automaticamente */
-}
-</style>
