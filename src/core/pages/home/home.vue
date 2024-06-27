@@ -4,6 +4,11 @@ import { userAuthStore } from '../../stores/auth';
 import TradeService from "../../services/trade";
 import { createToaster } from "@meforma/vue-toaster";
 import dateUtils from '@/core/utils/date.utils';
+import { Swiper, SwiperSlide } from 'swiper/vue';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/effect-cards';
+import 'swiper/css/pagination';
 
 const isLoading = ref(false);
 
@@ -43,15 +48,19 @@ const getTrades = () => {
     .finally(() => {isLoading.value = false});
 }
 
-import image1 from '../../../assets/img/carrousel1.webp';
-import image3 from '../../../assets/img/carrousel3.webp';
-import image2 from '../../../assets/img/carrousel2.webp';
-const carrouselItems =  [image1, image2, image3];
-
 onMounted(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     getUserName();
     getTrades();
 });
+
+const getOfferingCards = (trade: any) => {
+    return trade.tradeCards.filter((card: Card) => card.type === 'OFFERING');
+}
+
+const getReceivingCards = (trade: any) => {
+    return trade.tradeCards.filter((card: Card) => card.type === 'RECEIVING');
+}
 
 </script>
 
@@ -61,6 +70,15 @@ onMounted(() => {
             <VaCard class="mt-4 px-6 py-4 rounded-lg w-screen mx-auto" >
                 <div v-if="userAuth.GetIsAuth" class="mb-4" >
                     <p class="text-left text-lg font-semibold" >Olá, {{ userName }} </p>
+                    <VaDivider />
+                </div>
+                <div v-else >
+                    <div class="flex flex-col items-center justify-center" >
+                        <p class="text-center text-lg font-semibold" >Trocas Abertas</p>
+                    </div>
+                    <div class="mb-6">
+                        <VaDivider />
+                    </div>
                 </div>
                 <div v-if="isLoading" class="flex justify-center items-center">
                   <VaProgressCircle indeterminate
@@ -68,89 +86,78 @@ onMounted(() => {
                   />
                 </div>
                 <div v-else>
-                    <div >
-                        <div class="mb-6"  >
-                            <VaCard>
-                                <VaCarousel
-                                :stateful="true"
-                                :items="carrouselItems"
-                                infinite
-                                indicators
-                                indicator-trigger="hover"
-                                autoscroll
-                                :autoscroll-interval="9000"
-                                effect="fade"
-                                swipable
-                                :arrows="false"
-                                loading="eager"
-                                :draggable="false"
-                                fadeKeyframe="va-carousel-fade-appear 1s"
-                                fit="none"
-                                class="p-3 rounded-lg"
-                                >
-                                <template #default="{ item }">
-                                    <img :src="item" class="carousel-image" />
-                                </template>
-                                </VaCarousel>
-                            </VaCard>
-                        </div>
+                    <VaCard class="mt-4 px-6 py-4 rounded-lg w-full mx-auto" >
+                        <section id="Projects"
+                            class="w-fit mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 justify-items-center justify-center gap-y-16 gap-x-14 mb-10">
+                                <div v-for="trade in allTrades" :key="trade.id" class="w-72 bg-slate-50 shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl border border-gray-300">
+                                <div class="text-center py-2">
+                                    <p class="text-lg font-bold text-black truncate block capitalize">{{ trade.user.name }}</p>
+                                </div>
 
-                        <div class="flex flex-col items-center justify-center" >
-                            <p class="text-center text-lg font-semibold" >Solicitações de Troca</p>
-                        </div>
+                                <div class="flex gap-4">
+                                    <swiper :pagination="{ dynamicBullets: true, type: 'progressbar', }" :navigation="true" :parallax="true" :effect="'cards'" :grabCursor="true" :rewind="true"  class="h-full w-full">
+                                        <swiper-slide v-for="card in trade.tradeCards" :key="card.id" >
+                                            <VaImage
+                                                fit="contain"
+                                                class="h-80 w-72 object-cover rounded-t-xl "
+                                                :src="card.card.imageUrl || ''"
+                                                lazy
+                                                @loaded="trade.loaded = true"
+                                                >
+                                                <template #loader>
+                                                    <VaProgressCircle indeterminate />
+                                                </template>
+                                            </VaImage>
+                                        </swiper-slide>
+                                    </swiper>
+                                </div>
+                                
+                                <div class="px-4 py-3 w-72">
+                                    <div class="min-h-36" >
+                                        <p class="text-xs text-center font-semibold text-black cursor-auto my-3">Oferece:</p>
+                                        <div class="text-center" >
+                                            <template v-if="getOfferingCards(trade).length > 1">
+                                                <swiper :pagination="{ dynamicBullets: true, type: 'progressbar' }" :navigation="true" :parallax="true" :effect="'cards'" :grabCursor="true" :loop="true" class="h-full w-full">
+                                                    <swiper-slide v-for="card in getOfferingCards(trade)" :key="card.id">
+                                                        <span class="text-gray-400 uppercase text-xs">{{ card.card.name }}</span>
+                                                    </swiper-slide>
+                                                </swiper>
+                                            </template>
+                                            <template v-else-if="getOfferingCards(trade).length === 1">
+                                                <span class="text-gray-400 uppercase text-xs">{{ getOfferingCards(trade)[0].card.name }}</span>
+                                            </template>
+                                        </div>
 
-                        <div class="mb-6">
-                            <VaDivider />
-                        </div>
+                                        <p class="text-xs text-center font-semibold text-black cursor-auto my-3">Recebe:</p>
+                                        <div class="text-center" >
+                                            <template v-if="getReceivingCards(trade).length > 1">
+                                                <swiper :pagination="{ dynamicBullets: true, type: 'progressbar' }" :navigation="true" :parallax="true" :effect="'cards'" :grabCursor="true" :loop="true" class="h-full w-full">
+                                                    <swiper-slide v-for="card in getReceivingCards(trade)" :key="card.id">
+                                                        <span class="text-gray-400 uppercase text-xs">{{ card.card.name }}</span>
+                                                    </swiper-slide>
+                                                </swiper>
+                                            </template>
+                                            <template v-else-if="getReceivingCards(trade).length === 1">
+                                                <span class="text-gray-400 uppercase text-xs">{{ getReceivingCards(trade)[0].card.name }}</span>
+                                            </template>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex justify-between items-center ">
+                                        <p class="text-xs font-semibold text-black cursor-auto my-3">{{ dateUtils.formatDateTime(trade.createdAt) }}</p>
 
-                        <VaCard  >
-                          <div class="relative overflow-x-auto">
-                            <table class="w-full text-sm text-center table-auto rtl:text-center text-gray-500 dark:text-gray-400">
-                                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                                    <tr>
-                                        <th scope="col" class="px-6 py-3">
-                                            Usuário
-                                        </th>
-                                        <th scope="col" class="px-6 py-3">
-                                            Horário
-                                        </th>
-                                        <th scope="col" class="px-6 py-3">
-                                            Enviar
-                                        </th>
-                                        <th scope="col" class="px-6 py-3">
-                                            Receber
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="trade in allTrades" :key="trade.id" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                          {{ trade.user.name }}
-                                        </th>
-                                        <td class="px-6 py-4">
-                                          {{ dateUtils.formatDateTime(trade.createdAt) }}
-                                        </td>
-                                        <td class="px-6 py-4">
-                                          <ul>
-                                              <li v-for="card in trade.tradeCards.filter((card: Card) => card.type === 'OFFERING')" :key="card.id">
-                                                  {{ card.card.name }}
-                                              </li>
-                                          </ul>
-                                        </td>
-                                        <td class="px-6 py-4">
-                                          <ul>
-                                            <li v-for="card in trade.tradeCards.filter((card: Card) => card.type === 'RECEIVING')" :key="card.id">
-                                              {{ card.card.name }}
-                                            </li>
-                                          </ul>
-                                        </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                        <VaBadge
+                                            overlap
+                                        >
+                                            <template #text>
+                                                {{ trade.tradeCards.length }}
+                                            </template>
+                                        </VaBadge>
+                                    </div>
+                                </div>
                             </div>
-                        </VaCard>
-                        
-                    </div>
+                        </section>
+                    </VaCard>
                 </div>
             </VaCard>
         </div>
@@ -158,19 +165,5 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.carousel-image-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  padding: 20px;
-}
 
-.carousel-image {
-  width: 100%;
-  height: auto;
-  object-fit: cover;
-  object-position: 100% 0
-}
 </style>

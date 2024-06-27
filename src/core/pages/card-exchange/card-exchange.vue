@@ -126,7 +126,7 @@ const sendUserTrade = () => {
 <template>
     <div class="flex flex-col w-screen h-screen px-10 py-4 gap-10" >
         <div class="flex justify-center items-center" >
-            <VaCard class="mt-4 px-6 py-4 rounded-lg w-screen mx-auto" >
+            <VaCard class="mt-4 px-6 py-4 rounded-lg w-full mx-auto" >
               <div class="flex flex-col items-center justify-center" >
                 <p class="text-center text-lg font-semibold" >Solicitação de Trocas</p>
               </div>
